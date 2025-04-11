@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import streamlit as st  # Add this line
 
 # 🧬 Count DNA bases
 def count_bases(seq):
@@ -27,19 +28,20 @@ def reverse_complement(seq):
     rev_comp = ''.join([complement.get(base, 'N') for base in reversed(seq)])
     return rev_comp
 
-# 📊 Plot base counts
-def plot_base_counts(counts):
+
+def plot_base_counts(counts, title="DNA Base Counts"):
     bases = list(counts.keys())
     values = list(counts.values())
 
     plt.figure(figsize=(6, 4))
     plt.bar(bases, values)
-    plt.title("DNA Base Counts")
+    plt.title(title)
     plt.xlabel("Base")
     plt.ylabel("Count")
     plt.grid(axis='y', linestyle='--', alpha=0.6)
     plt.tight_layout()
-    plt.show()
+    st.pyplot(plt)  # ✅ this tells Streamlit to display the plot
+
 
 # 📈 GC content over sliding window
 def gc_content_sliding_window(seq, window_size=10):
@@ -99,3 +101,34 @@ def translate_dna(seq):
         protein += amino_acid
 
     return protein
+
+def load_fasta(filepath):
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+        seq = ''.join(line.strip() for line in lines if not line.startswith(">"))
+    return seq
+
+def codon_usage(seq):
+    seq = seq.upper()
+    codon_counts = {}
+
+    for i in range(0, len(seq) - 2, 3):
+        codon = seq[i:i+3]
+        if len(codon) == 3:
+            codon_counts[codon] = codon_counts.get(codon, 0) + 1
+
+    return codon_counts
+
+def plot_codon_usage(codon_counts, top_n=10):
+    sorted_codons = sorted(codon_counts.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    codons, counts = zip(*sorted_codons)
+
+    plt.figure(figsize=(10, 4))
+    plt.bar(codons, counts)
+    plt.title(f"Top {top_n} Codons by Frequency")
+    plt.xlabel("Codon")
+    plt.ylabel("Count")
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    st.pyplot(plt)  # ✅ show the plot in Streamlit
+
