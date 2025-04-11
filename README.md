@@ -65,3 +65,10 @@ DNAseq/
 
 
 **Let me know when it's pasted and committed — and if you want to add emojis, badges, or screenshots next! 🧬💖**
+
+---
+
+## 🖼️ Preview
+
+![DNAseq App Screenshot](screenshot.png)
+
